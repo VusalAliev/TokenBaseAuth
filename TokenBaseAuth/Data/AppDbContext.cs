@@ -10,5 +10,7 @@ namespace TokenBaseAuth.Data
         public AppDbContext(DbContextOptions options) : base(options)
         {
         }
+        public DbSet<Company> Companies { get; set; }
+        public DbSet<Product> Products { get; set; }
     }
 }
