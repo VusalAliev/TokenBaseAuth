@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using TokenBaseAuth.DTOs;
 using TokenBaseAuth.Entites;
 using TokenBaseAuth.Models;
+using TokenBaseAuth.Services.Interfaces;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace TokenBaseAuth.Controllers
@@ -14,10 +15,12 @@ namespace TokenBaseAuth.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        public AuthController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        private readonly ITokenHandler _tokenHandler;
+        public AuthController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenHandler tokenHandler)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _tokenHandler = tokenHandler;
         }
         [HttpPost("Register")]
         public async Task<ResponseModel> Signup(CreateUserDTO createUserDTO)
@@ -52,7 +55,8 @@ namespace TokenBaseAuth.Controllers
             {
                 //authorities
             }
-            return new ResponseModel { IsSuccess = true };
+            Token token = _tokenHandler.CreateAccessToken(10);
+            return new ResponseModel { IsSuccess = true,Token=token };
         }
     }
 }
